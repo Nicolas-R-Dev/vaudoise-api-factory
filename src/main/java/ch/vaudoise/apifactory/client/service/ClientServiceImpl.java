@@ -4,6 +4,7 @@ import ch.vaudoise.apifactory.client.domain.*;
 import ch.vaudoise.apifactory.client.dto.*;
 import ch.vaudoise.apifactory.client.mapper.ClientMapper;
 import ch.vaudoise.apifactory.client.repository.*;
+import ch.vaudoise.apifactory.common.exception.ConflictException;
 import ch.vaudoise.apifactory.common.exception.NotFoundException;
 import ch.vaudoise.apifactory.contract.repository.ContractRepository;
 import jakarta.transaction.Transactional;
@@ -31,6 +32,16 @@ public class ClientServiceImpl implements ClientService {
     /** {@inheritDoc} */
     @Override
     public Long create(ClientCreateDto dto) {
+        if (clientRepo.existsByEmail(dto.email())) {
+            throw new ConflictException("email already exists");
+        }
+        if (dto.type() == ClientType.COMPANY) {
+            String id = dto.companyIdentifier();
+            if (companyRepo.existsByCompanyIdentifier(id)) {
+                throw new ConflictException("companyIdentifier already exists");
+            }
+        }
+
         Client saved;
         if (dto.type() == ClientType.PERSON) {
             var p = new PersonClient();

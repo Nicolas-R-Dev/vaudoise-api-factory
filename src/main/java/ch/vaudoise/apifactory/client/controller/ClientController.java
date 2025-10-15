@@ -6,6 +6,7 @@ import ch.vaudoise.apifactory.client.dto.ClientUpdateDto;
 import ch.vaudoise.apifactory.client.service.ClientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -69,7 +70,7 @@ public class ClientController {
      *
      * @param id client identifier
      * @return {@link ClientResponseDto} representing the full client
-     * @throws NotFoundException if the client does not exist
+     * @throws ChangeSetPersister.NotFoundException if the client does not exist
      */
     @GetMapping("/{id}")
     public ClientResponseDto get(@PathVariable Long id) {

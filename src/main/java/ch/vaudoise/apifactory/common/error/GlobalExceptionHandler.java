@@ -1,13 +1,18 @@
 package ch.vaudoise.apifactory.common.error;
 
 import ch.vaudoise.apifactory.common.exception.BadRequestException;
+import ch.vaudoise.apifactory.common.exception.ConflictException;
 import ch.vaudoise.apifactory.common.exception.NotFoundException;
+import org.springframework.core.NestedExceptionUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.ConstraintViolationException;
+
+import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.util.*;
 /**
@@ -136,5 +141,35 @@ public class GlobalExceptionHandler {
         });
         body.put("errors", errors);
         return ResponseEntity.badRequest().body(body);
+    }
+    // 409 pour nos conflits "métier"
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<Map<String,Object>> conflict(ConflictException ex) {
+        var body = baseBody(409, "CONFLICT", ex.getMessage());
+        return ResponseEntity.status(409).body(body);
+    }
+
+    // 409 pour les violations d’unicité venant de la BDD (H2, etc.)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String,Object>> dataIntegrity(DataIntegrityViolationException ex) {
+        String rootMsg = NestedExceptionUtils.getMostSpecificCause(ex).getMessage();
+        var body = baseBody(409, "CONFLICT", "Unique constraint violated");
+        List<Map<String,Object>> errors = new ArrayList<>();
+
+        // Détection H2 (SQLState 23505) + heuristiques sur le message
+        Throwable root = NestedExceptionUtils.getMostSpecificCause(ex);
+        String sqlState = (root instanceof SQLException) ? ((SQLException) root).getSQLState() : null;
+        String lower = rootMsg != null ? rootMsg.toLowerCase() : "";
+
+        if ("23505".equals(sqlState) || lower.contains("unique") || lower.contains("duplicate")) {
+            if (lower.contains("email")) {
+                errors.add(Map.of("field","email","message","email already exists"));
+            } else if (lower.contains("companyidentifier") || lower.contains("company_identifier")) {
+                errors.add(Map.of("field","companyIdentifier","message","companyIdentifier already exists"));
+            }
+        }
+        if (!errors.isEmpty()) body.put("errors", errors);
+
+        return ResponseEntity.status(409).body(body);
     }
 }
