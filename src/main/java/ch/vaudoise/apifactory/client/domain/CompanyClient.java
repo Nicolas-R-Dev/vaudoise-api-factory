@@ -13,5 +13,5 @@ public class CompanyClient extends Client {
 
     @Pattern(regexp = "^[A-Z]{3}-\\d{3}$")
     @Column(nullable = false, unique = true)
-    private String companyIdentifier;
+    private String companyIdentifier; // immuable after the creation
 }

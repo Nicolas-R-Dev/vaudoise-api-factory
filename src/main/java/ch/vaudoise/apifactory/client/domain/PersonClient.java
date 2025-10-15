@@ -15,5 +15,5 @@ public class PersonClient extends Client {
 
     @PastOrPresent
     @Column(nullable = false)
-    private LocalDate birthdate;
+    private LocalDate birthdate; // immuable after the creation
 }
