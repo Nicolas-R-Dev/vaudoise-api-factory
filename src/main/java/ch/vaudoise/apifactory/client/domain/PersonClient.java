@@ -8,6 +8,14 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
+
+/**
+ * Client subtype representing a natural person.
+ * <p>
+ * Adds a {@code birthdate} attribute required for PERSON clients.
+ */
+
+
 @Getter
 @Setter
 @Entity

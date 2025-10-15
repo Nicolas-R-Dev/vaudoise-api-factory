@@ -8,6 +8,14 @@ import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDateTime;
 
+
+/**
+ * Base entity for clients (both PERSON and COMPANY).
+ * <p>
+ * Uses inheritance to map subtype-specific attributes into dedicated tables.
+ * Includes audit fields ({@code createdAt}, {@code updatedAt}).
+ */
+
 @Getter
 @Setter
 @Entity
@@ -18,6 +26,7 @@ public abstract class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /** Discriminator for client type (PERSON or COMPANY). */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ClientType type;
@@ -34,8 +43,10 @@ public abstract class Client {
     @Column(nullable = false)
     private String phone;
 
+    /** Audit: creation timestamp (ISO-8601). */
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+    /** Audit: last modification timestamp (ISO-8601). */
 
     @Column(nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();

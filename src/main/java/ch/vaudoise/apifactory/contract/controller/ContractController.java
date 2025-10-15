@@ -13,6 +13,18 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+
+/**
+ * REST controller exposing endpoints to manage contracts for a given client.
+ * <p>
+ * Supports single and batch creation, filtered listing (active / updatedSince),
+ * partial update of cost, and deletion.
+ * Validation is handled via Jakarta Validation and centralized error handling.
+ */
 
 @RestController
 @RequestMapping("/api")
@@ -21,7 +33,16 @@ public class ContractController {
 
     private final ContractService service;
 
-    /** Create a contract for a client with startDate defaults = today if null */
+    /**
+     * Creates a contract for a client.
+     * <p>
+     * If {@code startDate} is null, it defaults to today's date. {@code endDate} may be null.
+     *
+     * @param clientId the owner client id
+     * @param dto      contract creation payload
+     * @return {@code 201 Created} with a {@code Location} header to the new resource
+     */
+
     @PostMapping("/clients/{clientId}/contracts")
     public ResponseEntity<Void> create(
             @PathVariable Long clientId,
@@ -31,7 +52,16 @@ public class ContractController {
         return ResponseEntity.created(URI.create("/api/contracts/" + id)).build();
     }
 
-    /** Update only the cost and updates lastUpdatedAt internally (not exposed) */
+    /**
+     * Updates only the cost amount of a contract.
+     * <p>
+     * Also updates the internal {@code lastUpdatedAt} timestamp.
+     *
+     * @param id     contract id
+     * @param dto    payload containing the new cost amount
+     * @return {@code 200 OK} with the updated representation
+     */
+
     @PatchMapping("/contracts/{id}/cost")
     public ContractResponseDto updateCost(
             @PathVariable Long id,
@@ -42,10 +72,39 @@ public class ContractController {
     }
 
     /**
-     * Get contracts for one client.
-     * By default returns only active contracts (active=true).
-     * Optional filter by update date (updatedSince).
+     * Batch-creates multiple contracts for a client in a single transaction.
+     * <p>
+     * The operation is all-or-nothing: if any item is invalid, the entire batch is rolled back.
+     *
+     * @param clientId owner client id
+     * @param items    list of contract payloads to create
+     * @return {@code 201 Created} with a body listing created ids
      */
+
+    @PostMapping("/clients/{clientId}/contracts/batch")
+    public ResponseEntity<Map<String, Object>> createContractsBatch(
+            @PathVariable Long clientId,
+            @RequestBody List<@Valid ContractCreateDto> items
+    ) {
+        List<Long> ids = service.createBatch(clientId, items);
+        return ResponseEntity.status(201).body(Map.of("createdIds", ids));
+    }
+
+    /**
+     * Lists contracts for a client with optional filters.
+     * <ul>
+     *   <li>{@code active=true} (default): only active contracts (endDate is null or in the future)</li>
+     *   <li>{@code updatedSince}: only contracts whose {@code lastUpdatedAt} is after the given timestamp</li>
+     *   <li>Supports pagination and sorting through {@code Pageable}</li>
+     * </ul>
+     *
+     * @param clientId     owner client id
+     * @param active       filter for active contracts (defaults to {@code true})
+     * @param updatedSince optional timestamp to filter by last update
+     * @param pageable     pagination configuration
+     * @return a page of {@code ContractResponseDto}
+     */
+
     @GetMapping("/clients/{clientId}/contracts")
     public Page<ContractResponseDto> listForClient(
             @PathVariable Long clientId,
@@ -62,4 +121,18 @@ public class ContractController {
     public SumResponseDto sumActive(@PathVariable Long clientId) {
         return new SumResponseDto(clientId, service.sumActive(clientId));
     }
+
+    /**
+     * Deletes a contract by id.
+     *
+     * @param id contract identifier
+     * @return {@code 204 No Content}
+     */
+
+    @DeleteMapping("/contracts/{id}")
+    @ResponseStatus(NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        service.delete(id);
+    }
+
 }

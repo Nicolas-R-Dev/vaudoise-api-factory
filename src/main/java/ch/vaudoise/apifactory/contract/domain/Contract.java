@@ -12,6 +12,16 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+
+/**
+ * Contract entity linked to a {@link Client}.
+ * <p>
+ * {@code startDate} defaults to today's date if not provided; {@code endDate} may be null.
+ * {@code lastUpdatedAt} is maintained automatically via lifecycle callbacks
+ * and is used by the {@code updatedSince} filter.
+ */
+
+
 @Getter
 @Setter
 @Entity

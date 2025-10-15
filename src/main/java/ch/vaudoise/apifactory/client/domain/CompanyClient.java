@@ -6,6 +6,13 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
+
+/**
+ * Client subtype representing a company.
+ * <p>
+ * Adds a {@code companyIdentifier} attribute required for COMPANY clients.
+ */
+
 @Getter
 @Setter
 @Entity

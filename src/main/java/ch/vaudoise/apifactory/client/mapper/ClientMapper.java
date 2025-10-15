@@ -6,6 +6,12 @@ import ch.vaudoise.apifactory.client.domain.PersonClient;
 import ch.vaudoise.apifactory.client.dto.ClientResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+/**
+ * Maps {@code Client} entities to DTOs.
+ * <p>
+ * Handles subtype-specific attributes (e.g., {@code birthdate} for PERSON
+ * and {@code companyIdentifier} for COMPANY) when present.
+ */
 
 @Mapper(componentModel = "spring",
         imports = { PersonClient.class, CompanyClient.class })

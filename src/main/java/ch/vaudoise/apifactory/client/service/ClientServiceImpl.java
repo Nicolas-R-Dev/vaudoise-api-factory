@@ -12,6 +12,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
+/**
+ * Default implementation of {@link ClientService}.
+ * <p>
+ * Applies type-specific validations (PERSON/COMPANY), cross-aggregate operations
+ * (closing/deleting contracts on client removal), and delegates persistence to repositories.
+ */
 @Service
 @RequiredArgsConstructor
 public class ClientServiceImpl implements ClientService {
@@ -22,6 +28,7 @@ public class ClientServiceImpl implements ClientService {
     private final ContractRepository contractRepo;
     private final ClientMapper mapper;
 
+    /** {@inheritDoc} */
     @Override
     public Long create(ClientCreateDto dto) {
         Client saved;
@@ -43,12 +50,14 @@ public class ClientServiceImpl implements ClientService {
         return saved.getId();
     }
 
+    /** {@inheritDoc} */
     @Override
     public ClientResponseDto get(Long id) {
         var client = clientRepo.findById(id).orElseThrow(() -> new NotFoundException("Client "+id+" not found"));
         return mapper.toDto(client);
     }
 
+    /** {@inheritDoc} */
     @Override
     public ClientResponseDto update(Long id, ClientUpdateDto dto) {
         var client = clientRepo.findById(id).orElseThrow(() -> new NotFoundException("Client "+id+" not found"));
@@ -58,13 +67,17 @@ public class ClientServiceImpl implements ClientService {
         return mapper.toDto(clientRepo.save(client));
     }
 
-
-    // This Methode Delete all the active contract and after delete the client
+    /** {@inheritDoc} */
     @Override
     @Transactional
     public void delete(Long id) {
+        if (!clientRepo.existsById(id)) {
+            throw new NotFoundException("Client " + id + " not found");
+        }
         var today = LocalDate.now();
         contractRepo.closeAllActiveByClient(id, today);
+        contractRepo.deleteAllByClient(id);
         clientRepo.deleteById(id);
     }
+
 }
