@@ -204,6 +204,8 @@ proof-of-concept/
 
 Import the collection & environment into Postman.
 
+⚠️Make sure you select the imported environment before running the tests
+
 Run folder “0 – Setup” first → creates base data.
 
 Run folders 1 – Client PERSON, 2 – Client COMPANY, etc.

@@ -4,7 +4,7 @@
 	"values": [
 		{
 			"key": "baseUrl",
-			"value": "",
+			"value": "http://localhost:8080/api",
 			"type": "default",
 			"enabled": true
 		},
@@ -22,19 +22,19 @@
 		},
 		{
 			"key": "page",
-			"value": "",
+			"value": "0",
 			"type": "default",
 			"enabled": true
 		},
 		{
 			"key": "size",
-			"value": "",
+			"value": "10",
 			"type": "default",
 			"enabled": true
 		},
 		{
 			"key": "active",
-			"value": "",
+			"value": "true",
 			"type": "default",
 			"enabled": true
 		},
