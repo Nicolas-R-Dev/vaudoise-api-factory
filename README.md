@@ -177,10 +177,15 @@ proof-of-concept/
      ├─ 04_list_contracts_all.png
      ├─ 05_filter_updated_since.png
      ├─ 06_sum_active_contracts.png
-     ├─ 07_delete_client.png
-     ├─ 08_error_missing_birthdate.png
-     ├─ 09_error_duplicate_email.png
-     └─ 10_error_update_immutable.png
+     ├─ 07_create_many_clients.png
+     ├─ 08_create_many_contracts.png
+     ├─ 09_delete_contract.png
+     ├─ 10_delete_client.png
+     ├─ 11_delete_client_or_contract_already_deleted.png
+     ├─ 12_error_missing_birthdate.png
+     ├─ 13_error_missing_companyIdentifier.png
+     ├─ 14_error_duplicate_email.png
+     └─ 15_error_update_immutable.png
 ```
 
 ### ⚙️ Environment variables
@@ -209,18 +214,23 @@ Each request includes a test for the expected HTTP status (201, 200, 400, 409, e
 
 Include clear screenshots of these results (in /proof-of-concept/screenshots/):
 
-| #  | Screenshot                       | What to show               |
-| -- | -------------------------------- | -------------------------- |
-| 1  | `01_create_client_person.png`    | 201 Created                |
-| 2  | `02_read_client_person.png`      | Full client details        |
-| 3  | `03_create_contract_person.png`  | 201 Created                |
-| 4  | `04_list_contracts_all.png`      | Active + expired contracts |
-| 5  | `05_filter_updated_since.png`    | Updated contracts filtered |
-| 6  | `06_sum_active_contracts.png`    | Total cost                 |
-| 7  | `07_delete_client.png`           | 204 No Content             |
-| 8  | `08_error_missing_birthdate.png` | 400 VALIDATION_ERROR       |
-| 9  | `09_error_duplicate_email.png`   | 409 CONFLICT               |
-| 10 | `10_error_update_immutable.png`  | 400 Bad Request            |
+| #  | Screenshot                                         | What to show               |
+|----|----------------------------------------------------|----------------------------|
+| 1  | `01_create_client_person.png`                      | 201 Created                |
+| 2  | `02_read_client_person.png`                        | Full client details        |
+| 3  | `03_create_contract_person.png`                    | 201 Created                |
+| 4  | `04_list_contracts_all.png`                        | Active + expired contracts |
+| 5  | `05_filter_updated_since.png`                      | Updated contracts filtered |
+| 6  | `06_sum_active_contracts.png`                      | Total cost                 |
+| 7  | `07_create_many_clients.png`                       | 201 Created                |
+| 8  | `08_create_many_contracts.png`                     | 201 Created                |
+| 9  | `09_delete_contract.png`                           | 204 No Content             |
+| 10 | `10_delete_client.png`                             | 204 No Content             |
+| 11 | `11_delete_client_or_contract_already_deleted.png` | 404 Not Found              |
+| 12 | `12_error_missing_birthdate.png`                   | 400 VALIDATION_ERROR       |
+| 13 | `13_error_missing_companyIdentifier.png`           | 400 VALIDATION_ERROR       |
+| 14 | `14_error_duplicate_email.png`                     | 409 CONFLICT               |
+| 15 | `15_error_update_immutable.png`                    | 400 Bad Request            |
 
 ## 💡 Design Notes
 

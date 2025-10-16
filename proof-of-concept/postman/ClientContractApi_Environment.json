@@ -1,0 +1,75 @@
+{
+	"id": "5b9c2ce1-8f4e-447d-8fcc-836e8f22dd1b",
+	"name": "ClientContractApi",
+	"values": [
+		{
+			"key": "baseUrl",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "clientId",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "contractId",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "page",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "size",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "active",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "clientIdCompany",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "t_before",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "t_after",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "contractIdCompany",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "companyIdentifier",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2025-10-16T13:29:28.352Z",
+	"_postman_exported_using": "Postman/11.67.3"
+}

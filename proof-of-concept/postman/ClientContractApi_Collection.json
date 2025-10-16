@@ -1,0 +1,1680 @@
+{
+	"info": {
+		"_postman_id": "cbe5c995-114b-4a13-8649-8ade00489146",
+		"name": "ClientContractApi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "48319747"
+	},
+	"item": [
+		{
+			"name": "0 - Setup",
+			"item": [
+				{
+					"name": "Create Client PERSON",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ Client created successfully (201)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(201);\r",
+									"});\r",
+									"// récupère l'id depuis Location: /api/clients/{id}\r",
+									"const loc = pm.response.headers.get(\"Location\");\r",
+									"const m = loc && loc.match(/\\/clients\\/(\\d+)$/);\r",
+									"if (m) pm.environment.set(\"clientId\", m[1]);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\":\"PERSON\",\r\n    \"name\":\"Nicolas Pierre\",\r\n    \"email\":\"user+{{$timestamp}}@mail.com\",\r\n    \"phone\":\"+41221234567\",\r\n    \"birthdate\":\"1995-05-12\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Client COMPANY",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ Client created successfully (201)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(201);\r",
+									"});\r",
+									"\r",
+									"const loc = pm.response.headers.get(\"Location\");\r",
+									"const m = loc && loc.match(/\\/clients\\/(\\d+)$/);\r",
+									"if (m) pm.environment.set(\"clientIdCompany\", m[1]);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Préfixe de 3 lettres (fixe ou change-le si tu veux)\r",
+									"const prefix = \"VAD\";\r",
+									"\r",
+									"// Nombre aléatoire 0..999, zero-padded sur 3 chiffres\r",
+									"const n = Math.floor(Math.random() * 1000).toString().padStart(3, \"0\");\r",
+									"\r",
+									"// Ex: VAD-042\r",
+									"pm.environment.set(\"companyIdentifier\", `${prefix}-${n}`);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"type\": \"COMPANY\",\r\n  \"name\": \"Vaudoise SA\",\r\n  \"email\": \"contact+{{$timestamp}}@acme.com\",\r\n  \"phone\": \"+41221234567\",\r\n  \"companyIdentifier\": \"{{companyIdentifier}}\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a contract for a client COMPANY",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ Contract created successfully (201)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(201);\r",
+									"});\r",
+									"\r",
+									"const loc = pm.response.headers.get(\"Location\");\r",
+									"const m = loc && loc.match(/\\/contracts\\/(\\d+)$/);\r",
+									"if (m) pm.environment.set(\"contractIdCompany\", m[1]);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"costAmount\": 195.90 }\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientIdCompany}}/contracts",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"{{clientIdCompany}}",
+								"contracts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a contract for a client PERSON",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ Contract created successfully (201)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(201);\r",
+									"});\r",
+									"// récupère l'id du contrat depuis Location: /api/contracts/{id}\r",
+									"const loc = pm.response.headers.get(\"Location\");\r",
+									"const m = loc && loc.match(/\\/contracts\\/(\\d+)$/);\r",
+									"if (m) pm.environment.set(\"contractId\", m[1]);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"costAmount\": 159.50, \"startDate\": \"2023-01-01\", \"endDate\": \"2023-06-01\" }\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientId}}/contracts",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"{{clientId}}",
+								"contracts"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "1 - Client PERSON",
+			"item": [
+				{
+					"name": "Read a client PERSON",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ Client retrieved successfully (200)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"{{clientId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a client PERSON",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ Client updated successfully (200)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"name\":\"Jeanne D.\",\"email\":\"jean.d@mail.com\",\"phone\":\"+41790111000\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"{{clientId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create 1 contracts expired for PERSON",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ Contract created successfully (201)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(201);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"costAmount\": 159.50, \"startDate\": \"2023-01-01\", \"endDate\": \"2023-06-01\" }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientId}}/contracts",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"{{clientId}}",
+								"contracts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all contract of Client all active+expired",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ Status code is 200 or 201\", () => {\r",
+									"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientId}}/contracts?page=0&size=10&active=false",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"{{clientId}}",
+								"contracts"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "active",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all contract of Client only active",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ Status code is 200 or 201\", () => {\r",
+									"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientId}}/contracts?page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"{{clientId}}",
+								"contracts"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "active",
+									"value": "true",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update the cost amount",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function isoLocalSeconds() {\r",
+									"  const now = new Date();\r",
+									"  const tzOffsetMs = now.getTimezoneOffset() * 60 * 1000; // minutes → ms\r",
+									"  return new Date(now.getTime() - tzOffsetMs).toISOString().slice(0, 19);\r",
+									"}\r",
+									"\r",
+									"// We store the current local timestamp in a Postman environment variable\r",
+									"pm.environment.set(\"t_before\", isoLocalSeconds());\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ 200 OK\", () => pm.response.code === 200);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"costAmount\": 299.99 }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/contracts/{{contractId}}/cost",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"contracts",
+								"{{contractId}}",
+								"cost"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all contract active since T before",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function isoLocalSeconds() {\r",
+									"  const now = new Date();\r",
+									"  const tzOffsetMs = now.getTimezoneOffset() * 60 * 1000;\r",
+									"  return new Date(now.getTime() - tzOffsetMs).toISOString().slice(0, 19);\r",
+									"}\r",
+									"\r",
+									"pm.environment.set(\"t_after\", isoLocalSeconds());\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ 200 OK\", () => pm.response.code === 200);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientId}}/contracts?active=false&updatedSince={{t_before}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"{{clientId}}",
+								"contracts"
+							],
+							"query": [
+								{
+									"key": "active",
+									"value": "false"
+								},
+								{
+									"key": "updatedSince",
+									"value": "{{t_before}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all contract active since T After update",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function isoLocalSeconds() {\r",
+									"  const now = new Date();\r",
+									"  const tzOffsetMs = now.getTimezoneOffset() * 60 * 1000;\r",
+									"  return new Date(now.getTime() - tzOffsetMs).toISOString().slice(0, 19);\r",
+									"}\r",
+									"\r",
+									"pm.environment.set(\"t_after\", isoLocalSeconds());\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ 200 OK\", () => pm.response.code === 200);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientId}}/contracts?active=false&updatedSince={{t_after}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"{{clientId}}",
+								"contracts"
+							],
+							"query": [
+								{
+									"key": "active",
+									"value": "false"
+								},
+								{
+									"key": "updatedSince",
+									"value": "{{t_after}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sum of all active cost for one Client",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ Contract sum calculated successfully (200)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientId}}/contracts/sum",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"{{clientId}}",
+								"contracts",
+								"sum"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get contract pagination = 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ 200 OK\", () => pm.response.code === 200);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientId}}/contracts?page=0&size=2&active=false",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"{{clientId}}",
+								"contracts"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "2"
+								},
+								{
+									"key": "active",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a client",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ Client deleted successfully (204)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(204);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"{{clientId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a contract",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ 204 No Content\", () => pm.response.code === 204);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/contracts/{{contractId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"contracts",
+								"{{contractId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2 - Client COMPANY",
+			"item": [
+				{
+					"name": "Read a client COMPANY",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ Client retrieved successfully (200)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientIdCompany}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"{{clientIdCompany}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a client COMPANY",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ 200 OK\", () => pm.response.code === 200);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"name\":\"Jeanne D.\",\"email\":\"jean.d@mail.com\",\"phone\":\"+41790111000\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientIdCompany}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"{{clientIdCompany}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create 1 contracts expired for COMPANY",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ Contract created successfully (201)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(201);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"costAmount\": 159.50, \"startDate\": \"2023-01-01\", \"endDate\": \"2023-06-01\" }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientIdCompany}}/contracts",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"{{clientIdCompany}}",
+								"contracts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all contract of Client COMPANY all active+expired",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ Status code is 200 or 201\", () => {\r",
+									"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientIdCompany}}/contracts?page=0&size=10&active=false",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"{{clientIdCompany}}",
+								"contracts"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "active",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all contract of Client COMPANY only active",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ Status code is 200 or 201\", () => {\r",
+									"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientIdCompany}}/contracts?page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"{{clientIdCompany}}",
+								"contracts"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update the cost amount COMPANY",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ 200 OK\", () => pm.response.code === 200);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"costAmount\": 245.90 }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/contracts/{{contractIdCompany}}/cost",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"contracts",
+								"{{contractIdCompany}}",
+								"cost"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sum of all active cost for one Client COMPANY",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ Status code is 200 or 201\", () => {\r",
+									"  pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientIdCompany}}/contracts/sum",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"{{clientIdCompany}}",
+								"contracts",
+								"sum"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a client",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ 204 No Content\", () => pm.response.code === 204);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientIdCompany}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"{{clientIdCompany}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3 - Batch request",
+			"item": [
+				{
+					"name": "Create many Clients COMPANY + PERSON",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ Client created successfully (201)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(201);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n  {\r\n    \"type\": \"PERSON\",\r\n    \"name\": \"Alice Morel\",\r\n    \"email\": \"alice.morel@mail.com\",\r\n    \"phone\": \"+41790000011\",\r\n    \"birthdate\": \"1992-02-02\"\r\n  },\r\n  {\r\n    \"type\": \"COMPANY\",\r\n    \"name\": \"TechNova SA\",\r\n    \"email\": \"contact+1@technova.com\",\r\n    \"phone\": \"+41215550001\",\r\n    \"companyIdentifier\": \"TNS-001\"\r\n  }\r\n]\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/batch",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"batch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create many Clients COMPANY",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ Client created successfully (201)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(201);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n  {\r\n    \"type\": \"COMPANY\",\r\n    \"name\": \"Vaudoise SA\",\r\n    \"email\": \"contact+1@Vaudoise.com\",\r\n    \"phone\": \"+41255550001\",\r\n    \"companyIdentifier\": \"VAD-001\"\r\n  },\r\n  {\r\n    \"type\": \"COMPANY\",\r\n    \"name\": \"Thales SA\",\r\n    \"email\": \"contact+1@Thales.com\",\r\n    \"phone\": \"+41235550001\",\r\n    \"companyIdentifier\": \"THA-001\"\r\n  }\r\n]\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/batch",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"batch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create many Clients PERSON",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ Client created successfully (201)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(201);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n  {\r\n    \"type\": \"PERSON\",\r\n    \"name\": \"Hugo Morel\",\r\n    \"email\": \"Hugo.morel@mail.com\",\r\n    \"phone\": \"+41790200011\",\r\n    \"birthdate\": \"1992-05-02\"\r\n  },\r\n    {\r\n    \"type\": \"PERSON\",\r\n    \"name\": \"Patrick Poire\",\r\n    \"email\": \"Patrick.poire@mail.com\",\r\n    \"phone\": \"+41790800011\",\r\n    \"birthdate\": \"1992-02-02\"\r\n  }\r\n]\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/batch",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"batch"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4 - ERROR",
+			"item": [
+				{
+					"name": "Create Client PERSON without birthdate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"❌ 400 Bad Request attendu\", () => pm.response.code === 400);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\":\"PERSON\",\r\n    \"name\":\"Tom Paul\",\r\n    \"email\":\"piere.paooazzl@mail.com\",\r\n    \"phone\":\"+41221234567\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Client PERSON",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"✅ Client created successfully (201)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(201);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\":\"PERSON\",\r\n    \"name\":\"Tom Dupuis\",\r\n    \"email\":\"tom@mail.com\",\r\n    \"phone\":\"+41221234567\",\r\n    \"birthdate\":\"1995-05-12\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Client PERSON with email EXIST Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Conflict, email or companyIdentifier already Exist (409)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(409);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\":\"PERSON\",\r\n    \"name\":\"Camille Dupuis\",\r\n    \"email\":\"tom@mail.com\",\r\n    \"phone\":\"+41221234567\",\r\n    \"birthdate\":\"1995-05-12\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Read a client who dont exist",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"❌ 400 Bad Request attendu\", () => pm.response.code === 400);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/100",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"100"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a immuable field",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"❌ 400 Bad Request attendu\", () => pm.response.code === 400);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"name\":\"DADADA D.\",\"email\":\"jedsdan.d@mail.com\",\"phone\":\"+41790111000\", \"birthdate\":\"1998-05-12\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"{{clientId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create many contracts for a client with bad request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"❌ 400 Bad Request attendu\", () => pm.response.code === 400);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n  { \"costAmunt\": 199.90, \"startDate\": \"2025-10-15\" },\r\n  { \"co\": 299.99, \"startDate\": \"2025-11-01\", \"endDate\": \"2026-11-01\" },\r\n  { \"costAmount\": 159.50 }  // startDate sera \"today\" côté service\r\n]\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/{{clientId}}/contracts/batch",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								"{{clientId}}",
+								"contracts",
+								"batch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Client COMPANY without companyIdentifier",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"❌ 400 Bad Request attendu\", () => pm.response.code === 400);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"type\": \"COMPANY\",\r\n  \"name\": \"Acme SA\",\r\n  \"email\": \"contaect+test@acme.com\",\r\n  \"phone\": \"+41221234567\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
